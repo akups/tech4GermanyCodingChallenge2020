@@ -11,12 +11,15 @@ export default class App extends Component {
 
   componentDidMount() {
     fetch(
+      //Daten von RESTAPI raus holen
       "https://www.pegelonline.wsv.de/webservices/rest-api/v2/stations.json?includeTimeseries=true&includeCurrentMeasurement=true"
     )
       .then((res) => res.json())
       .then((json) => {
+        //ausgeholtes Daten als json verwenden
         this.setState({
           data: json.filter((el) => {
+            // weil wir nur den Daten von die vier Passua messstellen brauchen können wir hier es raus filtern
             if (el.longname.includes("PASSAU")) {
               return true;
             }
@@ -31,6 +34,8 @@ export default class App extends Component {
       return <div>Loading...</div>;
     } else {
       return (
+        // wir wolen unsere Daten als ein table herstellen da es ein gutes Überblick fordern
+        //wir benutzen React.Fragment weil unsere Table hat veile verschiedene Teile die anders berarbeitet müssen
         <React.Fragment>
           <h1>Wasserstände der vier Passauer Messstellen</h1>
           <table>
@@ -55,29 +60,27 @@ export default class App extends Component {
                         <React.Fragment>
                           <td>{Date(series.currentMeasurement.timestamp)}</td>
                           <td>{series.currentMeasurement.value}</td>
-                          {/* <td>{series.currentMeasurement.trend}</td> */}
                         </React.Fragment>
                       );
                     } else if (el.longname === "PASSAU LUITPOLDBRÜCKE DFH") {
                       return (
                         <React.Fragment>
-                          {/* //die Passau LUITPOLDBRÜCKE hat ein höhe von 515cm */}
+                          {/* //die Passau LUITPOLDBRÜCKE hat ein höhe von 515cm im Datensatz ist nur durchfahrtshöhe gegeben*/}
                           <td>{Date(series.currentMeasurement.timestamp)}</td>
                           <td>{series.currentMeasurement.value - 515}</td>
-                          {/* <td>{series.currentMeasurement.trend}</td> */}
                         </React.Fragment>
                       );
                     } else if (el.longname === "PASSAU STEINBACHBRÜCKE DFH") {
                       return (
                         <React.Fragment>
-                          {/* die Passau STEINBACHBRÜCKE hat ein höhe von 465cm */}
+                          {/* die Passau STEINBACHBRÜCKE hat ein höhe von 465cm im Datensatz ist nur durchfahrtshöhe gegeben*/}
                           <td>{Date(series.currentMeasurement.timestamp)}</td>
                           <td>{series.currentMeasurement.value - 465}</td>
-                          {/* <td>{series.currentMeasurement.trend}</td> */}
                         </React.Fragment>
                       );
                     }
                   })}
+                  {/* wir müssen ein 'Switch' nehmen um verschiedene worter zu benutzen wenn die wert von Trend sich ändern */}
                   {el.timeseries.slice(0, 1).map((series) => {
                     let trend = series.currentMeasurement.trend;
                     {
@@ -109,6 +112,7 @@ export default class App extends Component {
                       }
                     }
                   })}
+                  {/* wir müssen noch ein 'Switch' nehmen um verschiedene worter zu benutzen für jedes Meldestufe sich ändern */}
                   {el.timeseries.slice(0, 1).map((series) => {
                     let werte =
                       series.currentMeasurement.value - 465 ||
