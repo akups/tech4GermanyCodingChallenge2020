@@ -112,7 +112,7 @@ export default class App extends Component {
                       }
                     }
                   })}
-                  {/* wir müssen noch ein 'Switch' nehmen um verschiedene worter zu benutzen für jedes Meldestufe sich ändern */}
+                  {/* wir müssen noch ein 'Switch' nehmen um die verschiedene Meldestufe zu ziegen */}
                   {el.timeseries.slice(0, 1).map((series) => {
                     let werte =
                       series.currentMeasurement.value - 465 ||
